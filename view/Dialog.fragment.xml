@@ -1,0 +1,24 @@
+<core:FragmentDefinition
+  xmlns="sap.m"
+  xmlns:core="sap.ui.core">
+  <Dialog
+    id="Dialog"
+    title="Add/Modify Employee"
+    class="sapUiPopupWithPadding" >
+    <content>
+      <Label text="Enter Emp Id(must be a number)" />
+      <Input id="id" value="" />
+      <Label text="Enter Name" />
+      <Input id="name" value="" />
+      <Label text="Enter Address" />
+      <Input id="addr" value="" />
+      <Label text="Enter Designation" />
+      <Input id="des" value="" />
+    </content>
+    <Button id="btnUpdate" text="Update" press="onUpdateButton" />
+    <Button id="btnDelete" text="Delete" press="onDeleteButton" />
+    <Button id="btnCreate" text="Create" press="onCreateButton" />
+    <Button id="btnCancel" text="Cancel" press="onCancelButton" />
+
+  </Dialog>
+</core:FragmentDefinition>

@@ -1,0 +1,44 @@
+<core:View xmlns:core="sap.ui.core" 
+	xmlns:mvc="sap.ui.core.mvc" xmlns:l="sap.ui.layout" xmlns:table="sap.ui.table"
+	xmlns="sap.m" controllerName="sap.cd.ui5.demo.view.Dashboard" 
+	xmlns:html="http://www.w3.org/1999/xhtml">
+	<Page title="Employees">
+		<content>
+		    <Table 
+		        items="{/EmployeeSet}" 
+		        growing="true" growingScrollToLoad="true">
+		        <columns>
+		            <Column>
+		                <header>
+		                    <Label text='Name' />
+		                </header>
+		            </Column>
+		            <Column>
+		                <header>
+		                    <Label text='Employee Id' />
+		                </header>
+		            </Column>
+		            <Column>
+		                <header>
+		                    <Label text='Address' />
+		                </header>
+		            </Column>
+		            <Column>
+		                <header>
+		                    <Label text='Designation' />
+		                </header>
+		            </Column>
+		        </columns>
+		        <ColumnListItem type="Active" press="onItemPress">
+		            <cells>
+		                <Text text="{Empname}" />    
+		                <Text text="{Empid}" /> 
+		                <Text text="{Empadd}" /> 
+		                <Text text="{Empdes}" /> 
+		            </cells>
+		        </ColumnListItem>
+		    </Table>
+		    <Button text="Create New Employee" press="NewEntry" />
+		</content>
+	</Page>
+</core:View>
