@@ -13,7 +13,7 @@ sap.ui.controller("sap.cd.ui5.demo.view.Dashboard", {
 
         // set data model
         var sServiceURL = "/sap/opu/odata/SAP/ZMM_EMP_WY_SRV";
-        var oModel = new sap.ui.model.odata.ODataModel(sServiceURL, true);
+        oModel = new sap.ui.model.odata.ODataModel(sServiceURL, true);
         sap.ui.getCore().setModel(oModel);
 	},
 
@@ -120,58 +120,92 @@ sap.ui.getCore().setModel(oJsonModel);.view.Dashboard
         oEmployee.Empadd = sap.ui.getCore().byId("addr").getValue();
         oEmployee.Empdes = sap.ui.getCore().byId("des").getValue();
         
-        var requestObj = {
-                requestUri: '',
-                method: '',
-                headers: {
-                    "X-Requested-With" : "XMLHttpRequest",
-                    "Content-Type" : "application/json",
-                    "DataServiceVersion" : "2.0",
-                    "MaxDataServiceVersion" : "2.0",
-                    "Accept" : "application/json",
-                    "X-CSRF-Token" : ''
-                }
-            };
-            
+        // WAY ONE: Use OData Write Support
         if(this.mode === 'create'){
-            var url = "/sap/opu/odata/SAP/ZMM_EMP_WY_SRV/EmployeeSet";
-            var method = "POST";
-
-            requestObj.requestUri = url;
-            requestObj.method = method;
-            requestObj.data = oEmployee;
-        }else if(this.mode == 'update'){
-            var url = "/sap/opu/odata/SAP/ZMM_EMP_WY_SRV/EmployeeSet('"+ oEmployee.Empid +"')";
-            var method = "PUT";
-
-            requestObj.requestUri = url;
-            requestObj.method = method;
-            requestObj.data = oEmployee;
-        }else if(this.mode == 'delete') {
-            var url = "/sap/opu/odata/SAP/ZMM_EMP_WY_SRV/EmployeeSet('"+ oEmployee.Empid +"')";
-            var method = "DELETE";
+            var url = "/EmployeeSet";
             
-            requestObj.requestUri = url;
-            requestObj.method = method;
-            requestObj.data = oEmployee;
-        }   
+            oModel.create(url, oEmployee, null, function(data) {
+    			sap.ui.getCore().byId("Dialog").close();
+    			sap.m.MessageToast.show('Add Employee Succeessfully!');
+    		}, function(err) {
+    			//Error Callback:
+    			alert("Error occurred " + err.message);
+    		});            
+        }else if(this.mode == 'update'){
+            var url = "/EmployeeSet('"+ oEmployee.Empid +"')";
+
+            oModel.update(url, oEmployee, null, function(data) {
+    			sap.ui.getCore().byId("Dialog").close();
+    			sap.m.MessageToast.show('Update Employee Succeessfully!');
+    		}, function(err) {
+    			//Error Callback:
+    			alert("Error occurred " + err.message);
+    		});
+        }else if(this.mode == 'delete') {
+            var url = "/EmployeeSet('"+ oEmployee.Empid +"')";
+
+            oModel.remove(url, null, function(data) {
+    			sap.ui.getCore().byId("Dialog").close();
+    			sap.m.MessageToast.show('Delete Employee Succeessfully!');
+    		}, function(err) {
+    			//Error Callback:
+    			alert("Error occurred " + err.message);
+    		});
+        }           
         
-        OData.request({
-            requestUri: "/sap/opu/odata/SAP/ZMM_EMP_WY_SRV",
-            method: "GET",
-            headers: {
-                    "X-Requested-With" : "XMLHttpRequest",
-                    "X-CSRF-Token" : "Fetch"
-                }
-            }, function(data, response){
-                requestObj.headers['X-CSRF-Token'] = response.headers['x-csrf-token'];
+        // WAY TWO: USE ODATA REQUEST
+        // var requestObj = {
+        //         requestUri: '',
+        //         method: '',
+        //         headers: {
+        //             "X-Requested-With" : "XMLHttpRequest",
+        //             "Content-Type" : "application/json",
+        //             "DataServiceVersion" : "2.0",
+        //             "MaxDataServiceVersion" : "2.0",
+        //             "Accept" : "application/json",
+        //             "X-CSRF-Token" : ''
+        //         }
+        //     };
+            
+        // if(this.mode === 'create'){
+        //     var url = "/sap/opu/odata/SAP/ZMM_EMP_WY_SRV/EmployeeSet";
+        //     var method = "POST";
+
+        //     requestObj.requestUri = url;
+        //     requestObj.method = method;
+        //     requestObj.data = oEmployee;
+        // }else if(this.mode == 'update'){
+        //     var url = "/sap/opu/odata/SAP/ZMM_EMP_WY_SRV/EmployeeSet('"+ oEmployee.Empid +"')";
+        //     var method = "PUT";
+
+        //     requestObj.requestUri = url;
+        //     requestObj.method = method;
+        //     requestObj.data = oEmployee;
+        // }else if(this.mode == 'delete') {
+        //     var url = "/sap/opu/odata/SAP/ZMM_EMP_WY_SRV/EmployeeSet('"+ oEmployee.Empid +"')";
+        //     var method = "DELETE";
+            
+        //     requestObj.requestUri = url;
+        //     requestObj.method = method;
+        //     requestObj.data = oEmployee;
+        // }   
+        
+        // OData.request({
+        //     requestUri: "/sap/opu/odata/SAP/ZMM_EMP_WY_SRV",
+        //     method: "GET",
+        //     headers: {
+        //             "X-Requested-With" : "XMLHttpRequest",
+        //             "X-CSRF-Token" : "Fetch"
+        //         }
+        //     }, function(data, response){
+        //         requestObj.headers['X-CSRF-Token'] = response.headers['x-csrf-token'];
                 
-                OData.request(requestObj, function(){
-                    sap.ui.getCore().getModel().refresh();
-                    sap.ui.getCore().byId("Dialog").close();
-                    sap.m.MessageToast.show('Add/Modify Employee Succeessfully!');
-                });
-            });
+        //         OData.request(requestObj, function(){
+        //             sap.ui.getCore().getModel().refresh();
+        //             sap.ui.getCore().byId("Dialog").close();
+        //             sap.m.MessageToast.show('Add/Modify Employee Succeessfully!');
+        //         });
+        //     });
     },
     
     onCancelButton: function(){
